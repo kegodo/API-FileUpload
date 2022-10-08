@@ -6,11 +6,12 @@ import (
 )
 
 func (app *application) RandomStringHandler(w http.ResponseWriter, r *http.Request) {
-	userInput, err := app.readIntParam(r)
+	userInput, err := app.readIDParam(r)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return
 	}
+
 	if userInput > 9999 {
 		app.methodNotAllowedResponse(w, r, err)
 		return
@@ -25,6 +26,20 @@ func (app *application) RandomStringHandler(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func generateRandomString(id int64) {
-	panic("unimplemented")
+func (app *application) AboutMe(w http.ResponseWriter, r *http.Request) {
+	info := envelope{
+		"Name":         "Kevin Godoy",
+		"Address":      "Belmopan City, Belize",
+		"Occupation":   "Student",
+		"Organization": "University of Belize",
+		"Contact":      "2018117874@ub.edu.bz",
+		"Interest":     "Gaming",
+	}
+
+	err := app.writeJSON(w, http.StatusOK, info, nil)
+
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
 }
