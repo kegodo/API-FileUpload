@@ -2,7 +2,7 @@ package data
 
 import "FileUpload.Kevin.net/internal/validator"
 
-type aboutMe struct {
+type About struct {
 	Name         string `json:"name"`
 	Email        string `json:"email"`
 	Occupation   string `json:"occupation"`
@@ -11,7 +11,7 @@ type aboutMe struct {
 	Address      string `json:"address"`
 }
 
-func ValidateEntires(v *validator.Validator, bio *aboutMe) {
+func EntriesValidation(v *validator.Validator, bio *About) {
 	v.Check(bio.Name != "", "name", "must be provided")
 	v.Check(len(bio.Name) <= 200, "name", "must not be more than 200 bytes long")
 

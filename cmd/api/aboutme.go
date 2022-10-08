@@ -37,7 +37,7 @@ func (app *application) AboutMe(w http.ResponseWriter, r *http.Request) {
 	v := validator.New()
 
 	//check the map to determine if there were any validation errors
-	if data.ValidateEntires(v, jsondata); !v.Valid() {
+	if data.EntriesValidation(v, jsondata); !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}
