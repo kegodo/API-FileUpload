@@ -1,46 +1,25 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"FileUpload.Kevin.net/internal/data"
-	"FileUpload.Kevin.net/internal/validator"
 )
 
 func (app *application) AboutMe(w http.ResponseWriter, r *http.Request) {
-	//our target decode destination
-	var input struct {
-		Name         string `json:"name"`
-		Email        string `json:"email"`
-		Occupation   string `json:"occupation"`
-		Organization string `json:"organization"`
-		Education    string `json:"education"`
-		Address      string `json:"address"`
+
+	data := data.About{
+		Name:         "Kevin Godoy",
+		Email:        "2018117874@ub.edu.bz",
+		Occupation:   "Student",
+		Organization: "University of Belize",
+		Education:    "Associates in Information Technology",
+		Address:      "Belmopan City, Belize",
 	}
-	err := app.readJSON(w, r, &input)
+
+	err := app.writeJSON(w, http.StatusOK, envelope{"data": data}, nil)
 	if err != nil {
-		app.badRequestResponse(w, r, err)
-		return
-	}
-	//copying the values
-	jsondata := &data.About{
-		Name:         input.Name,
-		Email:        input.Email,
-		Occupation:   input.Occupation,
-		Organization: input.Organization,
-		Education:    input.Education,
-		Address:      input.Address,
+		app.serverErrorResponse(w, r, err)
 	}
 
-	//initialize a new validator instance
-	v := validator.New()
-
-	//check the map to determine if there were any validation errors
-	if data.EntriesValidation(v, jsondata); !v.Valid() {
-		app.failedValidationResponse(w, r, v.Errors)
-		return
-	}
-	//Display the request
-	fmt.Fprintf(w, "%+v\n", input)
 }

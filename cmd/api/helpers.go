@@ -2,7 +2,6 @@
 package main
 
 import (
-	"crypto/rand"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,8 +12,6 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 )
-
-const randomStringSource = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+_#$-!~"
 
 type envelope map[string]interface{}
 
@@ -86,22 +83,4 @@ func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst int
 	}
 
 	return nil
-}
-
-func (app *application) generateRandomString(length int) string {
-
-	randomStringSource := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+_#$-!~"
-
-	s := make([]rune, length)
-	r := []rune(randomStringSource)
-
-	for i := range s {
-		p, _ := rand.Prime(rand.Reader, len(r))
-		x := p.Uint64()
-		y := uint64(len(r))
-		s[i] = r[x%y]
-	}
-
-	return string(s)
-
 }

@@ -2,10 +2,12 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 // api version
@@ -26,8 +28,9 @@ type application struct {
 // main
 func main() {
 	var cfg config
-	cfg.port = 4000
-	cfg.env = "development"
+	flag.IntVar(&cfg.port, "port", 4000, "API server port")
+	flag.StringVar(&cfg.env, "env", "development", "Environment (development | stagging | production )")
+	flag.Parse()
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
@@ -37,8 +40,11 @@ func main() {
 	}
 
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", cfg.port),
-		Handler: app.routes(),
+		Addr:         fmt.Sprintf(":%d", cfg.port),
+		Handler:      app.routes(), // using the routes function from routes,go
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 30 * time.Second,
 	}
 
 	logger.Printf("starting %s server on %s", cfg.env, srv.Addr)
